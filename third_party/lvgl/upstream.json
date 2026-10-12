@@ -1,0 +1,7 @@
+{
+  "name": "lvgl",
+  "version": "9.3.0",
+  "url": "https://codeload.github.com/lvgl/lvgl/zip/refs/tags/v9.3.0",
+  "archive_sha256": "7225e7d2b83f89f3d089d3c3492083d447abb990fded24ad5bbaaa541e8746af",
+  "selection": "src plus root headers, configuration template, license and README; unmodified"
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "fatfs",
+    "version": "R0.15",
+    "url": "https://elm-chan.org/fsw/ff/arc/ff15.zip",
+    "archive_sha256": "e0d76654d877e6c74be5ea3c395808794d495169514e98cbf6046168b8f4f070"
+  },
+  {
+    "name": "tinyusb",
+    "version": "0.18.0",
+    "url": "https://codeload.github.com/hathach/tinyusb/zip/refs/tags/0.18.0",
+    "archive_sha256": "2a0b7229b0b7e9e67663c92df4579158f3a6386818bd16708a0cecfd8596644f"
+  },
+  {
+    "name": "sqlite",
+    "version": "3.50.4",
+    "url": "https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip",
+    "archive_sha256": "1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032"
+  },
+  {
+    "name": "lvgl",
+    "version": "9.3.0",
+    "url": "https://codeload.github.com/lvgl/lvgl/zip/refs/tags/v9.3.0",
+    "archive_sha256": "7225e7d2b83f89f3d089d3c3492083d447abb990fded24ad5bbaaa541e8746af",
+    "selection": "src plus root headers, configuration template, license and README; unmodified"
+  }
+]

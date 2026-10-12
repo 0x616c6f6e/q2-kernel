@@ -1,0 +1,389 @@
+{
+  "schema": 1,
+  "project": "Q2-Kernel",
+  "version": "0.1.0",
+  "lua_api": 2,
+  "manifest_format": 2,
+  "execution": "single owner; no IRQ or concurrent API calls",
+  "minimum_port": [
+    "allocate",
+    "release",
+    "now_ms"
+  ],
+  "runtime": {
+    "foreground_apps": 1,
+    "lua_heap_kib": [
+      32,
+      128
+    ],
+    "manifest_bytes": 4096,
+    "source_bytes": 32768,
+    "lifecycle": [
+      "on_start",
+      "on_event",
+      "on_tick"
+    ],
+    "builtin_methods": [
+      "os.info",
+      "os.log",
+      "os.capability",
+      "os.exit"
+    ],
+    "registered_apps": 8,
+    "concurrent_vms": 8,
+    "resident_app": "Trusted factory Home; one foreground content surface, other VMs continue cooperative ticks"
+  },
+  "logging": {
+    "compile_option": "Q2_ENABLE_LOG",
+    "default_compile": true,
+    "optional_sink": "q2_log_configure; per Kernel instance; synchronous owner thread",
+    "levels": [
+      "off",
+      "error",
+      "warn",
+      "info",
+      "debug"
+    ],
+    "lua_capability": "system.log",
+    "lua_method": "os.log",
+    "availability": "compiled in; explicit APP grant required; host may filter all output"
+  },
+  "components": [
+    {
+      "id": "storage_littlefs",
+      "module": "storage",
+      "capability": "storage.private",
+      "methods": [
+        "get",
+        "put"
+      ],
+      "status": "host-tested",
+      "backend": "registered block device",
+      "private_keys_per_app": 32,
+      "value_bytes": 255
+    },
+    {
+      "id": "storage_fatfs",
+      "module": "fatfs",
+      "capability": "storage.fatfs",
+      "methods": [
+        "get",
+        "put"
+      ],
+      "status": "host-tested",
+      "backend": "registered 512-byte block device; not atomic writes"
+    },
+    {
+      "id": "storage_sqlite",
+      "module": "sqlite",
+      "capability": "storage.database",
+      "methods": [
+        "get",
+        "put"
+      ],
+      "status": "host-tested-memory-only",
+      "backend": "portable memory VFS"
+    },
+    {
+      "id": "usb",
+      "module": "usb",
+      "capability": "usb.cdc",
+      "methods": [
+        "connected",
+        "write_text",
+        "read_text"
+      ],
+      "status": "host-tested-fake-dcd",
+      "backend": "SoC DCD required"
+    },
+    {
+      "id": "display",
+      "module": "display",
+      "capability": "display.text",
+      "methods": [
+        "clear",
+        "text"
+      ],
+      "status": "host-tested",
+      "backend": "text backend or optional LVGL provider; mutually exclusive"
+    },
+    {
+      "id": "display",
+      "module": "ui",
+      "capability": "display.ui",
+      "methods": [
+        "label",
+        "button",
+        "image",
+        "wallpaper",
+        "width",
+        "height",
+        "set_text",
+        "clear",
+        "background",
+        "scroll",
+        "scroll_y",
+        "position",
+        "style",
+        "size",
+        "qrcode",
+        "image_url",
+        "resolution"
+      ],
+      "status": "tested-lvgl-win32-x64",
+      "backend": "LVGL 9.3.0 / optional synchronous XRGB8888 pixel backend; alternative to text-only display"
+    },
+    {
+      "id": "apps",
+      "module": "apps",
+      "capability": "apps.list",
+      "methods": [
+        "count",
+        "id",
+        "info",
+        "last_error",
+        "foreground"
+      ],
+      "status": "host-tested",
+      "backend": "trusted immutable catalog; resident Home plus independent Lua VMs; foreground focus and explicit APP exit"
+    },
+    {
+      "id": "apps",
+      "module": "apps",
+      "capability": "apps.launch",
+      "methods": [
+        "launch"
+      ],
+      "status": "host-tested",
+      "backend": "trusted immutable catalog; resident Home plus independent Lua VMs; foreground focus and explicit APP exit"
+    },
+    {
+      "id": "apps",
+      "module": "apps",
+      "capability": "apps.navigate",
+      "methods": [
+        "home"
+      ],
+      "status": "host-tested",
+      "backend": "trusted immutable catalog; resident Home plus independent Lua VMs; foreground focus and explicit APP exit"
+    },
+    {
+      "id": "apps",
+      "module": "appearance",
+      "capability": "appearance.read",
+      "methods": [
+        "get",
+        "persistent"
+      ],
+      "status": "host-tested",
+      "backend": "trusted immutable catalog; resident Home plus independent Lua VMs; foreground focus and explicit APP exit"
+    },
+    {
+      "id": "apps",
+      "module": "appearance",
+      "capability": "appearance.write",
+      "methods": [
+        "set"
+      ],
+      "status": "host-tested",
+      "backend": "trusted immutable catalog; resident Home plus independent Lua VMs; foreground focus and explicit APP exit"
+    },
+    {
+      "id": "keys",
+      "module": "keys",
+      "capability": "input.keys",
+      "methods": [
+        "count",
+        "name",
+        "last",
+        "watch"
+      ],
+      "status": "host-tested",
+      "backend": "named recognized SINGLE/DOUBLE/LONG actions; per-instance subscription; SoC owns recognition, APP owns meaning"
+    },
+    {
+      "id": "display",
+      "module": "shell",
+      "capability": "system.ui.read",
+      "methods": [
+        "get"
+      ],
+      "status": "host-tested",
+      "backend": "system preferences, input timestamp and platform snapshots"
+    },
+    {
+      "id": "display",
+      "module": "shell",
+      "capability": "system.settings",
+      "methods": [
+        "set"
+      ],
+      "status": "host-tested",
+      "backend": "factory UUID restriction and persistent overrides"
+    },
+    {
+      "id": "display",
+      "module": "shell",
+      "capability": "system.lifecycle",
+      "methods": [
+        "layer",
+        "present"
+      ],
+      "status": "host-tested",
+      "backend": "trusted resident UUID only; home/status/saver surfaces"
+    },
+    {
+      "id": "display",
+      "module": "shell",
+      "capability": "screensaver.inhibit",
+      "methods": [
+        "keep_awake"
+      ],
+      "status": "host-tested",
+      "backend": "foreground awake APP only; renewable input timestamp, never unlocks"
+    },
+    {
+      "id": "keys",
+      "module": "keys",
+      "capability": "system.lifecycle",
+      "methods": [
+        "forward"
+      ],
+      "status": "host-tested",
+      "backend": "trusted resident instance input router; explicit forwarding to foreground subscriber"
+    },
+    {
+      "id": "data",
+      "module": "data",
+      "capability": "data.read",
+      "methods": [
+        "get",
+        "info",
+        "subscribe",
+        "unsubscribe"
+      ],
+      "status": "implemented",
+      "backend": "owner-published typed states/events; additional per-key capabilities, foreground-filtered input"
+    },
+    {
+      "id": "network",
+      "module": "network",
+      "capability": "network.http",
+      "methods": [
+        "get",
+        "post",
+        "write",
+        "send",
+        "json",
+        "status",
+        "code",
+        "read",
+        "close"
+      ],
+      "status": "x86 HTTP(S), bounded async text GET/JSON POST and JSON pointer reads",
+      "backend": "registered asynchronous transport; one request per APP, four total"
+    },
+    {
+      "id": "audio",
+      "module": "audio",
+      "capability": "audio.playback",
+      "methods": [
+        "open",
+        "write",
+        "play",
+        "pause",
+        "stop",
+        "state",
+        "position",
+        "duration"
+      ],
+      "status": "host-tested",
+      "backend": "registered asynchronous media player; network.http required for URL playback"
+    }
+  ],
+  "not_implemented": [
+    "wifi",
+    "ble",
+    "bt_pan",
+    "bt_a2dp",
+    "audio",
+    "device_package_installer",
+    "ota",
+    "sqlite_persistence",
+    "esp32s31_usb_dcd",
+    "full_lvgl_binding",
+    "chinese_font",
+    "linux_window_backend",
+    "macos_window_backend"
+  ],
+  "trust": "development apps; not a hardened hostile-code isolation boundary",
+  "ui_layout": {
+    "label_alignment": "optional fourth argument: left, center, right; aligns within remaining screen width",
+    "image_size": "optional fourth argument: positive square viewport side, contained aspect ratio",
+    "viewport": "APP-local coordinates; ui.height excludes enabled status bar; system chrome/screensaver survive APP clear/release; physical pointer coordinates remain unchanged",
+    "layers": "resident launcher < foreground APP < screensaver < enabled status bar; per-instance widget isolation",
+    "resolution": "ui.resolution() returns full logical WIDTHxHEIGHT; independent of content viewport/status bar."
+  },
+  "data": {
+    "registration": "owner-only boot-time schema; additional per-key capability required",
+    "types": [
+      "boolean",
+      "integer",
+      "string"
+    ],
+    "kinds": [
+      "state",
+      "event"
+    ],
+    "limits": {
+      "keys": 64,
+      "subscriptions": 128,
+      "per_app_subscriptions": 16,
+      "string_bytes": 255
+    },
+    "state": "cached; initial snapshot; TTL; coalescing and retry; optional notification interval",
+    "event": "no history; no coalescing; explicit overflow; foreground-only option",
+    "lua_events": [
+      "data.changed",
+      "data.event"
+    ],
+    "payload": [
+      "key",
+      "value",
+      "valid",
+      "status",
+      "subscription",
+      "sequence",
+      "timestamp_ms"
+    ],
+    "input": "publish only after lifecycle forward; no raw key access from the generic API"
+  },
+  "display_fonts": {
+    "latin": "Montserrat",
+    "cjk": "Noto Sans SC subset / OFL-1.1",
+    "sizes_px": [
+      20,
+      40
+    ],
+    "codepoints": 28313,
+    "embedded_bytes": 9900208,
+    "source": "assets/fonts/manifest.json"
+  },
+  "remote_images": {
+    "api": "ui.image_url(handle,url)",
+    "capabilities": [
+      "display.ui",
+      "network.http"
+    ],
+    "formats": [
+      "PNG",
+      "baseline JPEG"
+    ],
+    "max_response_bytes": 262144,
+    "max_dimension": 512,
+    "per_instance_urls": 1,
+    "global_slots": 4,
+    "deadline_ms": 5000,
+    "cache": "RAM only; retained across redraws; release on APP exit"
+  }
+}

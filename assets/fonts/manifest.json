@@ -1,0 +1,16 @@
+{
+  "source_family": "LXGW WenKai Lite Regular",
+  "source_version": "v1.522",
+  "source_commit": "067a6d508532cc0f8bc79e899ec3b06ff4dee38a",
+  "source_url": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/067a6d508532cc0f8bc79e899ec3b06ff4dee38a/fonts/TTF/LXGWWenKaiLite-Regular.ttf",
+  "source_sha256": "140c99ba4e28e817cec49bf82a0c5fcdc4fe633fb9dfda16d0ee8d59a8545f15",
+  "license": "OFL-1.1",
+  "license_url": "https://raw.githubusercontent.com/lxgw/LxgwWenKai-Lite/067a6d508532cc0f8bc79e899ec3b06ff4dee38a/OFL.txt",
+  "license_sha256": "c38b1994a5e48ac30ac7d1da7d0409fd8fd8127dfe28a13d6e787d5b1ef34a5e",
+  "fonttools": "4.60.1",
+  "weight": 400,
+  "coverage": "All upstream Unicode cmap entries; no common-character/BMP filter",
+  "codepoints": 25598,
+  "bytes": 13462252,
+  "sha256": "4d9e05d4f532461edd2298c5469f51d711bbb1fb151e462e4e84c457084a8ed1"
+}
